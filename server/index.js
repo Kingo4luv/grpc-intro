@@ -6,6 +6,26 @@ const grpc = require('grpc')
      Implements the greet RPC method.
 */
 
+function greetManyTimes(call, callback){
+    const firstName = call.request.getGreeting().getFirstName();
+
+    let count = 0, intervalID = setInterval(function (){
+        const greetManyTimesResponse = new greets.GreetManyTimesResponse();
+        greetManyTimesResponse.setResult(firstName);
+
+
+        //setup streaming
+        call.write(greetManyTimesResponse);
+
+        if(++count > 9){
+            clearInterval(intervalID);
+            call.end()
+        }
+
+    }, 1000);
+
+}
+
 function greet(call, callback){
     const greeting = new greets.GreetResponse();
 
@@ -18,7 +38,7 @@ function greet(call, callback){
 
 function main(){
     const server = new grpc.Server();
-    server.addService(service.GreetServiceService, {greet:greet});
+    server.addService(service.GreetServiceService, {greet:greet, greetManyTimes:greetManyTimes});
 
     server.bind("127.0.0.1:50051", grpc.ServerCredentials.createInsecure());
     server.start();
