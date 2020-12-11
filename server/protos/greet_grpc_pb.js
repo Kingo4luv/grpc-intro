@@ -66,7 +66,7 @@ greet: {
 greetManyTimes: {
     path: '/greet.GreetService/GreetManyTimes',
     requestStream: false,
-    responseStream: false,
+    responseStream: true,
     requestType: protos_greet_pb.GreetManyTimesRequest,
     responseType: protos_greet_pb.GreetManyTimesResponse,
     requestSerialize: serialize_greet_GreetManyTimesRequest,
